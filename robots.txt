@@ -1,4 +1,4 @@
 User-agent: *
 Disallow:
 Allow: /
-Sitemap: https://bl0v3.com/sitemap.xml
+Sitemap: https://bolives-hax.github.io/sitemap.xml
