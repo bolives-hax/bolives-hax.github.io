@@ -1,0 +1,434 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+    <title> - APL</title>
+    <link rel="self" type="application/atom+xml" href="https://bolives-hax.github.io/tags/apl/atom.xml"/>
+    <link rel="alternate" type="text/html" href="https://bolives-hax.github.io"/>
+    <generator uri="https://www.getzola.org/">Zola</generator>
+    <updated>2024-04-28T00:00:00+00:00</updated>
+    <id>https://bolives-hax.github.io/tags/apl/atom.xml</id>
+    <entry xml:lang="en">
+        <title>Raymarching meets dyalog APL</title>
+        <published>2024-04-28T00:00:00+00:00</published>
+        <updated>2024-04-28T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            bl0v3
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://bolives-hax.github.io/Blog/raymarching-in-dyalog-apl/"/>
+        <id>https://bolives-hax.github.io/Blog/raymarching-in-dyalog-apl/</id>
+        
+        <content type="html" xml:base="https://bolives-hax.github.io/Blog/raymarching-in-dyalog-apl/">
+	&lt;img class=&quot;
+			
+			
+			
+			
+		&quot;
+		
+		src=&quot;https:&amp;#x2F;&amp;#x2F;github.com&amp;#x2F;bolives-hax&amp;#x2F;apl-raymarcher&amp;#x2F;blob&amp;#x2F;master&amp;#x2F;preview_final.png?raw=true&quot; &#x2F;&gt;
+
+&lt;h1 id=&quot;code&quot;&gt;code&lt;&#x2F;h1&gt;
+&lt;h2 id=&quot;source-code&quot;&gt;source code&lt;&#x2F;h2&gt;
+&lt;p&gt;As for now I only provide build expression trough nix which are found
+alongside the sourcecode in &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;bolives-hax&#x2F;apl-raymarcher&quot;&gt;this github repo&lt;&#x2F;a&gt;.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;running-it-yourself&quot;&gt;running it yourself&lt;&#x2F;h2&gt;
+&lt;p&gt;TODO &lt;&#x2F;p&gt;
+&lt;h1 id=&quot;implementation-details&quot;&gt;implementation details&lt;&#x2F;h1&gt;
+&lt;h2 id=&quot;so-how-does-it-work&quot;&gt;so how does it work&lt;&#x2F;h2&gt;
+&lt;p&gt;With raymarching works pretty similar to raytracing, but instead of checking
+if our ray intersects with an objects exposed surface trough the means of algoriths
+such as &lt;a href=&quot;https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;M%C3%B6ller%E2%80%93Trumbore_intersection_algorithm&quot;&gt;the Möller–Trumbore intersection algorithm&lt;&#x2F;a&gt; we instead use something called &lt;a href=&quot;https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Signed_distance_function&quot;&gt;signed distance functions&lt;&#x2F;a&gt; or short “SDF” ’s. These essentially are functions returning the distance from a given point &lt;strong&gt;p&lt;&#x2F;strong&gt; to our geometry.&lt;&#x2F;p&gt;
+&lt;p&gt;For example the SDF for a sphere would look sth like&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;glsl&quot; class=&quot;language-glsl z-code&quot;&gt;&lt;code class=&quot;language-glsl&quot; data-lang=&quot;glsl&quot;&gt;&lt;span class=&quot;z-source z-glsl&quot;&gt;flaot &lt;span class=&quot;z-meta z-function z-glsl&quot;&gt;&lt;span class=&quot;z-entity z-name z-function z-glsl&quot;&gt;sphereSDF&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;&lt;span class=&quot;z-meta z-function z-parameters z-glsl&quot;&gt;&lt;span class=&quot;z-meta z-group z-glsl&quot;&gt;&lt;span class=&quot;z-punctuation z-section z-group z-begin z-glsl&quot;&gt;(&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;&lt;span class=&quot;z-meta z-function z-parameters z-glsl&quot;&gt;&lt;span class=&quot;z-meta z-group z-glsl&quot;&gt;&lt;span class=&quot;z-storage z-type z-glsl&quot;&gt;vec3&lt;&#x2F;span&gt; &lt;span class=&quot;z-variable z-parameter z-glsl&quot;&gt;p&lt;&#x2F;span&gt;&lt;span class=&quot;z-punctuation z-separator z-glsl&quot;&gt;,&lt;&#x2F;span&gt; &lt;span class=&quot;z-storage z-type z-glsl&quot;&gt;float&lt;&#x2F;span&gt; &lt;span class=&quot;z-variable z-parameter z-glsl&quot;&gt;radius&lt;&#x2F;span&gt;&lt;span class=&quot;z-punctuation z-section z-group z-end z-glsl&quot;&gt;)&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;&lt;span class=&quot;z-meta z-function z-glsl&quot;&gt; &lt;&#x2F;span&gt;&lt;span class=&quot;z-meta z-function z-glsl&quot;&gt;&lt;span class=&quot;z-meta z-block z-glsl&quot;&gt;&lt;span class=&quot;z-punctuation z-section z-block z-begin z-glsl&quot;&gt;{&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;&lt;span class=&quot;z-meta z-function z-glsl&quot;&gt;&lt;span class=&quot;z-meta z-block z-glsl&quot;&gt;
+&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;&lt;span class=&quot;z-source z-glsl&quot;&gt;&lt;span class=&quot;z-meta z-function z-glsl&quot;&gt;&lt;span class=&quot;z-meta z-block z-glsl&quot;&gt;    # &lt;span class=&quot;z-meta z-function-call z-glsl&quot;&gt;&lt;span class=&quot;z-support z-function z-glsl&quot;&gt;length&lt;&#x2F;span&gt;&lt;span class=&quot;z-meta z-group z-glsl&quot;&gt;&lt;span class=&quot;z-punctuation z-section z-group z-begin z-glsl&quot;&gt;(&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;&lt;span class=&quot;z-meta z-function-call z-glsl&quot;&gt;&lt;&#x2F;span&gt;&lt;span class=&quot;z-meta z-function-call z-glsl&quot;&gt;&lt;span class=&quot;z-meta z-group z-glsl&quot;&gt;&lt;span class=&quot;z-punctuation z-section z-group z-end z-glsl&quot;&gt;)&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;&lt;&#x2F;span&gt; gets the length of its arguments vector
+&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;&lt;span class=&quot;z-source z-glsl&quot;&gt;&lt;span class=&quot;z-meta z-function z-glsl&quot;&gt;&lt;span class=&quot;z-meta z-block z-glsl&quot;&gt;    &lt;span class=&quot;z-meta z-function-call z-glsl&quot;&gt;&lt;span class=&quot;z-support z-function z-glsl&quot;&gt;length&lt;&#x2F;span&gt;&lt;span class=&quot;z-meta z-group z-glsl&quot;&gt;&lt;span class=&quot;z-punctuation z-section z-group z-begin z-glsl&quot;&gt;(&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;&lt;span class=&quot;z-meta z-function-call z-glsl&quot;&gt;&lt;span class=&quot;z-meta z-group z-glsl&quot;&gt;p&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;&lt;span class=&quot;z-meta z-function-call z-glsl&quot;&gt;&lt;span class=&quot;z-meta z-group z-glsl&quot;&gt;&lt;span class=&quot;z-punctuation z-section z-group z-end z-glsl&quot;&gt;)&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;&lt;&#x2F;span&gt; &lt;span class=&quot;z-keyword z-operator z-arithmetic z-glsl&quot;&gt;-&lt;&#x2F;span&gt; radius&lt;span class=&quot;z-punctuation z-terminator z-glsl&quot;&gt;;&lt;&#x2F;span&gt;
+&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;&lt;span class=&quot;z-source z-glsl&quot;&gt;&lt;span class=&quot;z-meta z-function z-glsl&quot;&gt;&lt;span class=&quot;z-meta z-block z-glsl&quot;&gt;&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;&lt;span class=&quot;z-meta z-function z-glsl&quot;&gt;&lt;span class=&quot;z-meta z-block z-glsl&quot;&gt;&lt;span class=&quot;z-punctuation z-section z-block z-end z-glsl&quot;&gt;}&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;So essentially taking the length of a point spanned from one point to another. Substaced by the radios of out sphere tells us how far that sphere is away from the supplied point passed as &lt;em&gt;&lt;strong&gt;vec3 p&lt;&#x2F;strong&gt;&lt;&#x2F;em&gt; in this example.&lt;&#x2F;p&gt;
+&lt;p&gt;In apl I implemented it as:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;apl&quot; class=&quot;language-apl z-code&quot;&gt;&lt;code class=&quot;language-apl&quot; data-lang=&quot;apl&quot;&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;ball_sdf←{  (length ⍵) - ⍺ }
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;with the function length being supplied as&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;apl&quot; class=&quot;language-apl z-code&quot;&gt;&lt;code class=&quot;language-apl&quot; data-lang=&quot;apl&quot;&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;⍝ ⍺ =2 would mean the squareroot
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;sqrt←{⍵*÷⍺}
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;length←{2 sqrt (+&#x2F;{⍵*2}¨⍵)}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Ok but now do we go from having a SDF to actually approximating where and if that object is hit?&lt;&#x2F;p&gt;
+&lt;p&gt;Thats quite simple. First we need to define some variables though&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;em&gt;Assuming the function res supplies the horizontal and vertical resolutions as&lt;&#x2F;em&gt; &lt;strong&gt;(x y)&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;apl&quot; class=&quot;language-apl z-code&quot;&gt;&lt;code class=&quot;language-apl&quot; data-lang=&quot;apl&quot;&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;res←↑(get_res drawer ( 0 0 ))[2]
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;xres←(res)[1] ⋄ yres←(res)[2] 
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;cam_origin←(0 0 ¯1)
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Now having the dimensions of the frame we intend to render. We in order to map each pixel to a ray
+which we run our SDF’s against we first need to map them onto a plane that goes from &lt;strong&gt;(0,0)&lt;&#x2F;strong&gt; to &lt;strong&gt;(1,1)&lt;&#x2F;strong&gt;
+or in my case &lt;strong&gt;(-0.5,-0.5) to (0.5) (0.5)&lt;&#x2F;strong&gt; as I prefer that notation. We can do this trough&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;apl&quot; class=&quot;language-apl z-code&quot;&gt;&lt;code class=&quot;language-apl&quot; data-lang=&quot;apl&quot;&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;xy←{((⍳(xres))-1)⍵}¨((⍳(yres))-1)
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;_uv←{(⊃⍵[1]÷xres) (⍵[2]÷yres)}¨xy
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;uv←_uv-0.5
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+
+	&lt;img class=&quot;
+			
+			
+			
+			
+		&quot;
+		
+		src=&quot;https:&amp;#x2F;&amp;#x2F;varun.ca&amp;#x2F;static&amp;#x2F;ray-march-41bd80ce90cdf1dde6084381abf07d6f.svg&quot; &#x2F;&gt;
+
+&lt;p&gt;I also apply something called &lt;a href=&quot;https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Aspect_ratio_(image)&quot;&gt;aspect ratio&lt;&#x2F;a&gt;
+before creating the actual vectors.&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;apl&quot; class=&quot;language-apl z-code&quot;&gt;&lt;code class=&quot;language-apl&quot; data-lang=&quot;apl&quot;&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;uv←{⊃((⍵[1] ÷ (xres ÷ yres)) ⍵[2])}¨uv
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;uv_vecs ← ⊃,&#x2F;{y←⍵[2] ⋄ {⍵ (-y)}¨(⊃⍵[1]) }¨uv
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;So generating rays is now as simple as&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;apl&quot; class=&quot;language-apl z-code&quot;&gt;&lt;code class=&quot;language-apl&quot; data-lang=&quot;apl&quot;&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;{
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;	x←⍵[1]
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;	y←⍵[2]
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;	cam_dir←norm x y 1
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;    rgb cam_dir t 
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;}¨uv_vecs
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;The code above would emit normalized directional vectors in the direction of each pixel. Along with the camera origin
+this would provide the basis for our camera.&lt;&#x2F;p&gt;
+&lt;p&gt;In my renderer the function &lt;strong&gt;rgba&lt;&#x2F;strong&gt; lays the basis to converting ray vectors to actual color values.&lt;&#x2F;p&gt;
+&lt;p&gt;Its being called like:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;apl&quot; class=&quot;language-apl z-code&quot;&gt;&lt;code class=&quot;language-apl&quot; data-lang=&quot;apl&quot;&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;rgb cam_dir t 
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;where t just denotes time, while not implemented yet one could do something with that for example reference it in animations.&lt;&#x2F;p&gt;
+&lt;p&gt;But now, why is it called ray marching? Like where is the actual marching taking place and why do we need to march
+in the first place isn’t that sdf enough? Well essentially what woul happen if you had 2 objects and the ray would
+come quite close to one object initially but then still basses by and hits another oject. In this case the sdf
+would still return the distance of the object being closer. See below&lt;&#x2F;p&gt;
+&lt;p&gt;(TODO add a better ilustration)&lt;&#x2F;p&gt;
+
+	&lt;img class=&quot;
+			
+			
+			
+			
+		&quot;
+		
+		src=&quot;https:&amp;#x2F;&amp;#x2F;www.tylerbovenzi.com&amp;#x2F;RayMarch&amp;#x2F;Assets&amp;#x2F;figure3.png&quot; &#x2F;&gt;
+
+&lt;p&gt;To accomodate for this issue we essentially make smaller and smaller steps the smaller our distance grows. If the distance
+is very close to 0 wed register that as a hit. Otherwise we would step on until either the max step count is reached or the
+maximum distance is exeeded.&lt;&#x2F;p&gt;
+&lt;p&gt;The marching function is called from the rbg function described above, at the time of writing this it looks like this&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;apl&quot; class=&quot;language-apl z-code&quot;&gt;&lt;code class=&quot;language-apl&quot; data-lang=&quot;apl&quot;&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;⍝ ⍵ = [ cam_dir time bg ]
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;rgb←{
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;    cam_dir←⊃⍵[1]
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;	time←⊃⍵[2]
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;	d←(( 0 cam_origin  cam_dir 35 100) march 0)
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;	hit←d[1]
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;	⍝ 	phong ( total_dist , ro , rd , obj)
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;	hit: phong ((d[2]) cam_origin cam_dir (d[3]))  
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;	⍝ not hit (render background)
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;	(sky cam_dir[1] (0 ⌈ ((cam_dir[2])+0.12)))
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Essentially  &lt;code&gt;d←(( 0 cam_origin  cam_dir 35) march 0)&lt;&#x2F;code&gt; is where the magic happens. Our march function will march
+along &lt;code&gt;cam_dir&lt;&#x2F;code&gt; starting from &lt;code&gt;cam_origin&lt;&#x2F;code&gt;. The 35 means a maximum of 35 steps will be taken but can be adjusted. For
+example rendering reflections should use less steps as less precision is needed there I guess.  &lt;code&gt;100&lt;&#x2F;code&gt; means
+we render up until the vector length of &lt;code&gt;100.0&lt;&#x2F;code&gt; from the camera. While technically not needed if we ommited this
+wed always take &lt;code&gt;35&lt;&#x2F;code&gt; or whatever out max step count is set to until giving up. This reduces unnecescary computations. The first argument is
+the distance stepped so far. We initialize this with 0 as march internally calls itself with an increasing distance
+value as the first parameter. The argument on the right side of march is the stepcount. We also initialize this with
+0 as march will everytime it calls itself increment that by one.&lt;&#x2F;p&gt;
+&lt;p&gt;March as the first return value returns either &lt;strong&gt;0&lt;&#x2F;strong&gt; or &lt;strong&gt;1&lt;&#x2F;strong&gt; &lt;code&gt;(hit,...)&lt;&#x2F;code&gt; which we inspect before accesing further
+return parameters such as the distance &lt;code&gt;d[2]&lt;&#x2F;code&gt; or the id of the obect hit &lt;code&gt;d[3]&lt;&#x2F;code&gt;. Since if march never hit anything
+we couldn’t return anything in these fields.&lt;&#x2F;p&gt;
+&lt;p&gt;Assuming &lt;code&gt;hit=1&lt;&#x2F;code&gt; as in &lt;strong&gt;true&lt;&#x2F;strong&gt; wed call the &lt;code&gt;phong&lt;&#x2F;code&gt; function which would apply &lt;a href=&quot;https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Phong_shading&quot;&gt;the phong shading model&lt;&#x2F;a&gt; taking as its last parameter the id of the oject that was hit as knowing that we can from within &lt;code&gt;phong&lt;&#x2F;code&gt; apply different “material” properties by using different light absorbtion&#x2F;reflection attributes in accordance with the phong shading model.&lt;&#x2F;p&gt;
+&lt;p&gt;If nothing was hit the &lt;code&gt;sky&lt;&#x2F;code&gt; function will be called returning the rgb components of the background for the given point.&lt;&#x2F;p&gt;
+&lt;p&gt;Now lets disect the march function to gain a better understanding of it:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;apl&quot; class=&quot;language-apl z-code&quot;&gt;&lt;code class=&quot;language-apl&quot; data-lang=&quot;apl&quot;&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;⍝ ⍺ = [ total_dist , ro , rd , max_steps, max_dist ]
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;⍝ ⍵ = stepcount
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;march←{
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;	total_dist ← ⍺[1]
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;	ro ← ⊃⍺[2] 
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;	rd ← ⊃⍺[3]
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;	max_steps ← ⊃⍺[4]
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;	max_dist ← ⊃⍺[5]
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;	r ← sdf ( ro + rd × total_dist )
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;	dist ← r[1]
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;	obj  ← r[2]
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;	⍝ if we exceeded the maximum amount of steps return 0
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;	⍝ AND we exceeded the maximum distance from the ray origin=( eg cam pos&#x2F;point of reflection) return 0
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;	
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;	⍝ TODO use dist to simulate fog  by adding some fog color value based on the distance
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;	⍵&amp;lt;max_steps ^ dist &amp;lt; max_dist: {
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;		dist &amp;lt; epsi: (1 (dist + total_dist) obj )
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;		( (dist + total_dist) ro rd max_steps max_dist) march ⍵
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;	} ⍵+1
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;	(0 0)
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;I belive the abstract is pretty self explainatory but in essence &lt;code&gt;r ← sdf ( ro + rd × total_dist )&lt;&#x2F;code&gt; is whats of most
+interest to it. All sdfs at least take the parameter &lt;code&gt;p&lt;&#x2F;code&gt; which denotes the point in space the signed distance function
+returns its &lt;em&gt;distance&lt;&#x2F;em&gt; from. In order to march we must progress our directional vector rd derived
+trough the pixel mapping above by factor for the the current distance  to check against. This needs to be
+added to the camera origin ro. We could also leave that out but then our camera would be restricted to 0 0 0. But
+its better to have some flexibility here, also the march function is used in other places within this program
+for example for marching along reflection rays which start from the surface we reflected from so its generally
+better to add ro here.&lt;&#x2F;p&gt;
+&lt;p&gt;We could for example set r to the the &lt;code&gt;ball_sdf←{  (length ⍵) - ⍺ }&lt;&#x2F;code&gt; function as showed earlier on.
+&lt;code&gt;⍵&lt;&#x2F;code&gt;  denotes the point p in this case  &lt;code&gt;ro + rd × total_dist&lt;&#x2F;code&gt;  while &lt;code&gt;⍺&lt;&#x2F;code&gt; is the radius of the sphere.
+Were not limited to a single sphere sdf of course but could also comine multiple sdfs trough use of the &lt;code&gt;⌊&lt;&#x2F;code&gt; &lt;strong&gt;minimum&lt;&#x2F;strong&gt;  operator.&lt;&#x2F;p&gt;
+&lt;p&gt;For example  showing 2 spheres. One centered and one at &lt;code&gt;y=1&lt;&#x2F;code&gt;  trough calling:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;apl&quot; class=&quot;language-apl z-code&quot;&gt;&lt;code class=&quot;language-apl&quot; data-lang=&quot;apl&quot;&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;(ball_sdf (p - (0 0 0)) ⌊ (ball_sdf (p - (0 1 0))
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;This works as it would return the distance to the sphere closer to us. &lt;code&gt;(-sdf1) ⌈ (sdf2)&lt;&#x2F;code&gt; could be used
+to carve out the first sdf from the second one &lt;strong&gt;NOTE: this “-” sign is required here&lt;&#x2F;strong&gt;. Likewise
+using &lt;code&gt; (sdf1) ⌈ (sdf2)&lt;&#x2F;code&gt; &lt;em&gt;max&lt;&#x2F;em&gt; would  instead return only the points where &lt;code&gt;sdf1&lt;&#x2F;code&gt; intersects with &lt;code&gt;sdf2&lt;&#x2F;code&gt;. There are lots
+of tricks that can be done to signed distance functions but it should already be celar that even with
+just min and max and + and - you can compose some pretty complex geometry.&lt;&#x2F;p&gt;
+&lt;p&gt;Now I will focus the call to phong function seen before in &lt;code&gt;rgb&lt;&#x2F;code&gt;. rgb has the section&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;apl&quot; class=&quot;language-apl z-code&quot;&gt;&lt;code class=&quot;language-apl&quot; data-lang=&quot;apl&quot;&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;hit: phong ((d[2]) cam_origin cam_dir (d[3]))  
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;which essentially runs phong  with the parameters&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;apl&quot; class=&quot;language-apl z-code&quot;&gt;&lt;code class=&quot;language-apl&quot; data-lang=&quot;apl&quot;&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;⍝ ⍵ = [ total_dist , ro , rd , obj]
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;The start of phong is structured like this:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;apl&quot; class=&quot;language-apl z-code&quot;&gt;&lt;code class=&quot;language-apl&quot; data-lang=&quot;apl&quot;&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;⍝ ⍵ = [ total_dist , ro , rd , obj]
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;phong←{
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;	total_dist←⊃⍵[1]
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;	ro←⊃⍵[2]
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;	rd←⊃⍵[3]
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;	obj←⍵[4]
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;	p←ro + rd × total_dist
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;	
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;	l1←{
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;		ambient_color←checkers_ball p
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;		diffuse_color←0.5 0.5 0.5
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;		specular_color←0.1 0.1 0.1
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;		alpha←0.7
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;		light_intensity←⍵
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;		ambient_color diffuse_color specular_color alpha light_intensity 
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;	} 0.5
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;    ⍝ ... further lights
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;	lightPos←3 3 0 ⍝ hardcoded here but could ofc be passed  via ⍵[5]
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;&lt;code&gt;l1&lt;&#x2F;code&gt; defines a light locally. In my case phong defines &lt;code&gt;l1&lt;&#x2F;code&gt; - &lt;code&gt;l7&lt;&#x2F;code&gt;. &lt;&#x2F;p&gt;
+&lt;p&gt;instead of explaining what &lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;apl&quot; class=&quot;language-apl z-code&quot;&gt;&lt;code class=&quot;language-apl&quot; data-lang=&quot;apl&quot;&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;ambient_color←checkers_ball p
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;diffuse_color←0.5 0.5 0.5
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;specular_color←0.1 0.1 0.1
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;do I will just include a picture that gets the point across&lt;&#x2F;p&gt;
+
+	&lt;img class=&quot;
+			
+			
+			
+			
+		&quot;
+		
+		src=&quot;https:&amp;#x2F;&amp;#x2F;upload.wikimedia.org&amp;#x2F;wikipedia&amp;#x2F;commons&amp;#x2F;thumb&amp;#x2F;6&amp;#x2F;6b&amp;#x2F;Phong_components_version_4.png&amp;#x2F;800px-Phong_components_version_4.png&quot; &#x2F;&gt;
+
+&lt;p&gt;following lightPos seen above comes&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;apl&quot; class=&quot;language-apl z-code&quot;&gt;&lt;code class=&quot;language-apl&quot; data-lang=&quot;apl&quot;&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;⍝ checkered ball
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;⍵=scene_obj1_ball: l1 phongLight p ro
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;⍝ octahedron
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;⍵=scene_obj2_octa: l2 phongLight p ro
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;⍝ blob
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;⍵=scene_obj3_melted_balls: l3 phongLight p ro
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;⍝ floor
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;⍵=scene_obj4_floor: (l4 phongLight p ro) + (4 checkers ((p[1]) (p[3])))
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;⍵=scene_obj5_frame: (l5 phongLight p ro)
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;⍵=scene_obj6_ball: (l6 phongLight p ro) + ( 0.5 × (0.11 checkers ((p[1]) (p[2]))))
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;⍵=scene_obj7_torus: (l6 phongLight p ro) + ( 0.5 × (0.22 checkers ((p[1]) (p[2]))))
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;⍵=scene_obj8_rounded_box: reflective_material ( p rd ro scene_obj8_rounded_box l7)
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;assuming ofc V are defined somewher, in my case globally. Note that there is no
+catchall&#x2F;default expression. I intentionally chose this so i don’t forget
+to handle any object by accident. But you could ofc just write sth like &lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;apl&quot; class=&quot;language-apl z-code&quot;&gt;&lt;code class=&quot;language-apl&quot; data-lang=&quot;apl&quot;&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;    ⍵=scene_objX_NAME: (l_X phongLight p ro)
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;    (l_default phongLight p ro)
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;with &lt;code&gt;(l_default phongLight p ro)&lt;&#x2F;code&gt; being applied for any unmatched object. &lt;code&gt;phongLight&lt;&#x2F;code&gt;
+takes the as its left parameter whats defined above by l1-l7 and as the parameters on its
+right &lt;code&gt;p&lt;&#x2F;code&gt; and &lt;code&gt;ro&lt;&#x2F;code&gt;. ro in this case is the position of the camera and p is the point on a surface
+&lt;code&gt;march&lt;&#x2F;code&gt; detected an intersection with. Based on that information &lt;code&gt;phongLight&lt;&#x2F;code&gt; returns a color
+in &lt;code&gt;(r g b)&lt;&#x2F;code&gt; specification. Please note that &lt;code&gt;⍵=scene_obj8_rounded_box&lt;&#x2F;code&gt; is special I will document
+it later on as its the only object with reflective properties in the scene.&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;apl&quot; class=&quot;language-apl z-code&quot;&gt;&lt;code class=&quot;language-apl&quot; data-lang=&quot;apl&quot;&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;scene_obj1_ball←1 
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;scene_obj2_octa←2
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;scene_obj3_melted_balls←3
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;scene_obj4_floor←4
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;scene_obj5_frame←5
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;scene_obj6_ball←6
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;scene_obj7_torus←7
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;scene_obj8_rounded_box←8
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;knowing  the object id in ⍵ is quite useful here, as it allows us to apply phong shading or even textures&#x2F;reflection
+on various objects differently. If we were to omit it wed either have to calculate it again by throwing p in the sdfs
+again or we would have to assign the same texture and phong shading properties to every object.&lt;&#x2F;p&gt;
+&lt;p&gt;So now lets look at phongLight :)&lt;&#x2F;p&gt;
+&lt;p&gt;The picture below should provide some hints of what is going on in there&lt;&#x2F;p&gt;
+
+	&lt;img class=&quot;
+			
+			
+			
+			
+		&quot;
+		
+		src=&quot;https:&amp;#x2F;&amp;#x2F;blog.kakaocdn.net&amp;#x2F;dn&amp;#x2F;ct4wDp&amp;#x2F;btrB5880JNi&amp;#x2F;3goJCO3Sy0tqmiTLemvUC0&amp;#x2F;img.png&quot; &#x2F;&gt;
+
+&lt;pre data-lang=&quot;apl&quot; class=&quot;language-apl z-code&quot;&gt;&lt;code class=&quot;language-apl&quot; data-lang=&quot;apl&quot;&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;⍝ ⍺ = [ ambient_color(rgb), diffuse_color(rgb), specular_color(rgb), alpha, light_intensity ]
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;⍝ ⍵ = [ p ro ]
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;phongLight←{
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;	p←⊃⍵[1]
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;	ro←⊃⍵[2]
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;	⍝ TODO REMOVE 0.5 (DEBUG)
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;	ambient_color←(⊃⍺[1]) × 0.5
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;	diffuse_factor←⊃⍺[2]
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;	specular_factor←⊃⍺[3]
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;	alpha←⊃⍺[4]
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;	light_intensity←⊃⍺[5]
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;	⍝ estimate the normal vector at point p on the surface
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;	n ← estNormal p
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;	⍝ light position ( TODO don&amp;#39;t hardcode up here ) 
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;	light_pos←((0) (3) (1))
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;	⍝ vector between the point on the surface and the light position
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;	l← norm ( light_pos - p)
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;	⍝ vector between the point on the surface and the view&#x2F;camera&#x2F;etc vector
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;	v← norm ( ro - p)
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;	⍝ vector  reflecting the light-surface vector on the estimated surfaces normal vector 
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;	r← norm ( (-l) reflect n )
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;	⍝ dot product of both
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;	dotln ← l dot n
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;	dotrv ← r dot v
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;	⍝ the light doesn&amp;#39;t hit the surface at any relevant angle
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;	dotln &amp;lt; 0.0: 3 ⍴ 0.0
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;	
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;	c ← ambient_color + {
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;		⍝ angle not in range for specular effect, just apply diffuse color
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;		⍵ &amp;lt; 0.0: diffuse_factor × dotln
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;		⍝ angle in range for specular effect, apply diffuse and specular colors
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;		diffuse_factor × dotln + specular_factor × ( dotrv × alpha )  
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;	} dotrv 
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;	light_intensity × c
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;}
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Essentially based on what angle we look at the surface from and the position of a light we
+can determine if a specular effect should be present or rather just a diffuse lighting effect. Or if the light
+never even hit the object. Based on if any of the 3 cases (not hit, hit diffuse, hit specular) apply the effects&lt;&#x2F;p&gt;
+&lt;p&gt;Now to &lt;code&gt;scene_obj8_rounded_box:&lt;&#x2F;code&gt; which is special in the sense that it doesn’t just apply phong shading
+but also simulates a reflective surface.&lt;&#x2F;p&gt;
+&lt;p&gt;What essentially happens here is that if &lt;code&gt;obj=scene_obj8_rounded_box: reflective_material&lt;&#x2F;code&gt; meaning the rounded box 8
+got hit by a ray from the camera. Instead of applying phong shading like the other objects. Whats being done here is that similar to phong shading we take into account from what angle were
+looking at the object. Using the estimated normal vector of the point on the surface the camera ray
+is pointing at and the view angle we can reflect the ray accordingly. &lt;&#x2F;p&gt;
+
+	&lt;img class=&quot;
+			
+			
+			
+			
+		&quot;
+		
+		src=&quot;https:&amp;#x2F;&amp;#x2F;media.geeksforgeeks.org&amp;#x2F;wp-content&amp;#x2F;uploads&amp;#x2F;20220915162140&amp;#x2F;WhatisReflectionofLight.png&quot; &#x2F;&gt;
+
+&lt;p&gt;So knowing what the vector&#x2F;ray direction after being reflected allows us to do the following: We essentially do 
+the same as what we did when casting rays from the camera upon non reflective objects. But instead of
+the ray origin being the camera and the ray direction being at trough which pixel on our plane it goes, the ray
+origin is the position our ram originating from the camera hit the reflective surface at. Likewise we use
+the reflected directional vector as our new directional vector.&lt;&#x2F;p&gt;
+&lt;p&gt;One could think of it roungly as us &lt;del&gt;moving the camera to the point were reflecting from&lt;&#x2F;del&gt;  We then using
+this new information undergo the marching loop once again by calling the &lt;code&gt;march&lt;&#x2F;code&gt; function. Note that the maximum
+step count was reduced  to 20 and the maximum distance to 40 as reflections generally need less accuracy.&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;IMPORTANT DETAIL:&lt;&#x2F;strong&gt; note the line specifying &lt;code&gt;ref_surface_p ← ref_surface_p + ref_surface_n × 0.005&lt;&#x2F;code&gt; this is a VERY important detail. Basically what happens here is that we shift the origin we use for the reflected amount by a tiny bit forwards
+towards the normal vector of the surface to avoid it intersecting with itself.&lt;&#x2F;p&gt;
+&lt;p&gt;Whats left now is performing phong shading on the object initially hit not the reflection. To then combine that
+with the reflection as otherwise wed have a perfect mirror though (you likely couldn’t tell its a mirror). So
+in order to be able to tell it apart as a reflective surface it can’t perfectly reflect everything
+and needs to perform some sort of modification to the colors it reflects. As for now &lt;code&gt;l7&lt;&#x2F;code&gt; gives a slightly yollow tint.&lt;&#x2F;p&gt;
+&lt;p&gt;The line doing that job is essentially &lt;code&gt;col_obj_self← (light phongLight ref_surface_p  ro )×0.3&lt;&#x2F;code&gt; and at the return segment&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;apl&quot; class=&quot;language-apl z-code&quot;&gt;&lt;code class=&quot;language-apl&quot; data-lang=&quot;apl&quot;&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;	hit: ((t ref_reflected_final)×0.7) + col_obj_self
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;        	⍝ nothing hit, thus apply background accoring to the reflected vectors orientation
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;        	((sky (ref_reflected_rd[1])  (0 ⌈((ref_reflected_rd[2])+0.12)))×0.5) + col_obj_self
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;pre data-lang=&quot;apl&quot; class=&quot;language-apl z-code&quot;&gt;&lt;code class=&quot;language-apl&quot; data-lang=&quot;apl&quot;&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;reflective_material←{
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;	ref_surface_p ← (⊃⍵[1])
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;	ref_view_rd ← (⊃⍵[2])
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;	ro ← (⊃⍵[3])
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;	obj_self← (⊃⍵[4])
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;	light ← (⊃⍵[5])
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;    	⍝ normal vector of the point we hit the surface at
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;	ref_surface_n ← estNormal ref_surface_p
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;    	⍝ IMPORTANT !!! V
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;    	⍝ slightly offset the origin to cast the reflected ray from in the direction of the reflecting surfaces
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;    	⍝ normal vector (which will always point away from it)
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;	ref_surface_p ← ref_surface_p + ref_surface_n × 0.005
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;    	⍝ reflect the camera to reflective surface vector using the surfaces normal vector at that position
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;	ref_reflected_rd ← norm (    ref_view_rd reflect ref_surface_n )
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;    	⍝ initiate raymarching once more but this time starting from the reflecting surface
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;    	⍝ using a slightly reduced  step count&#x2F;max distance
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;	ref_reflected_final  ← ( 0 ref_surface_p ref_reflected_rd 70 150) march 0
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;	⍝ 1 if the reflected ray hit anything, otherwise 0 
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;	hit←(ref_reflected_final[1])
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;	t←{
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;		dist←⍵[2]
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;		obj_is_self← (⍵[3])=obj_self
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;        	⍝ object intersected with itself ( should never happen for now just color it in a vibrant
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;        	⍝ green soits easy to debug or maybe throw an exception 
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;		obj_is_self: ( 0 1 0) 
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;            		⍝object didn&amp;#39;t intersect with itself, apply phong shading at the point the reflection ray hit at
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;            		phong (dist ref_surface_p ref_reflected_rd (⍵[3]))
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;	}
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;	col_obj_self← (light phongLight ref_surface_p  ro )×0.3
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;    	⍝                      V phong shading at the point the reflection hit at 
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;	hit: ((t ref_reflected_final)×0.7) + col_obj_self
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;        	⍝ nothing hit, thus apply background accoring to the reflected vectors orientation
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;        	((sky (ref_reflected_rd[1])  (0 ⌈((ref_reflected_rd[2])+0.12)))×0.5) + col_obj_self
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;	⍝ TODO ^ instead of using these hardcoded values allow the user to specify the factor of what
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;	⍝ rgb components get reflected more and make it bound to distance. For now this is too
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;	⍝ enhance obj reflecitons while not reflecting the background too much but thats ofc just a hack
+&lt;&#x2F;span&gt;&lt;span class=&quot;z-text z-plain&quot;&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+</content>
+        
+    </entry>
+</feed>
