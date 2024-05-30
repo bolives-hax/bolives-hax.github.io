@@ -20,7 +20,7 @@
       cp -Lr --no-preserve=mode $SITE_PATH site
       cp -r .git flake.nix README.md site/
       cd site
-      git add .
+      git add *
       git commit -m \"$1\"
       git push
       cd ../
