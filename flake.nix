@@ -18,7 +18,7 @@
         echo usage: nix run .# \"git commit message\"
       else 
       cp -Lr --no-preserve=mode $SITE_PATH site
-      cp -r .git flake.nix site/
+      cp -r .git flake.nix README.md site/
       cd site
       git add .
       git commit -m \"$1\"
