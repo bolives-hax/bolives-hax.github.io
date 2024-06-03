@@ -7,6 +7,10 @@
         <loc>https://bolives-hax.github.io/Blog/</loc>
     </url>
     <url>
+        <loc>https://bolives-hax.github.io/Blog/bringing-dyalogs-isolates-and-futres-to-the-apl-raymarcher/</loc>
+        <lastmod>2024-05-02</lastmod>
+    </url>
+    <url>
         <loc>https://bolives-hax.github.io/Blog/raymarching-in-dyalog-apl/</loc>
         <lastmod>2024-04-28</lastmod>
     </url>
@@ -33,10 +37,19 @@
         <loc>https://bolives-hax.github.io/tags/dyalog/</loc>
     </url>
     <url>
+        <loc>https://bolives-hax.github.io/tags/isolates/</loc>
+    </url>
+    <url>
         <loc>https://bolives-hax.github.io/tags/math/</loc>
     </url>
     <url>
+        <loc>https://bolives-hax.github.io/tags/multi-threading/</loc>
+    </url>
+    <url>
         <loc>https://bolives-hax.github.io/tags/nix/</loc>
+    </url>
+    <url>
+        <loc>https://bolives-hax.github.io/tags/paralleleach/</loc>
     </url>
     <url>
         <loc>https://bolives-hax.github.io/tags/raymarching/</loc>
